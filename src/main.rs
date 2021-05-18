@@ -1,9 +1,35 @@
+extern crate clap;
+extern crate num_cpus;
+
+use clap::{Arg, App};
 use std::net::{SocketAddr, TcpStream};
 use std::time::Duration;
 
-extern crate num_cpus;
-
 fn main() {
+    let matches = App::new("Ports Open")
+                          .version("1.0")
+                          .author("Langston Graham <langstongraham@gmail.com>")
+                          .about("Check the status of open ports at given ip for given range")
+                          .arg(Arg::with_name("ip")
+                               .help("The ip for port scan")
+                               .required(true)
+                               .index(1))
+                          .arg(Arg::with_name("port_min")
+                               .help("The start port for the scan")
+                               .required(true)
+                               .index(2))
+                          .arg(Arg::with_name("port_max")
+                               .help("The end port for the scan")
+                               .required(true)
+                               .index(3))
+                          .get_matches();
+
+    let ip = matches.value_of("ip").unwrap();
+    let port_min = matches.value_of("port_min").unwrap();
+    let port_max = matches.value_of("port_max").unwrap();
+
+    println!("IP: {} Ports: {} - {}", ip, port_min, port_max);
+
     // Check number of threads available
     let total_threads = num_cpus::get();
     println!("{} threads available", total_threads);
