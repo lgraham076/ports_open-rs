@@ -8,4 +8,4 @@ RUN useradd -ms /bin/bash rust-builder
 USER rust-builder
 WORKDIR /home/rust-builder
 
-COPY . .
+CMD ["/bin/bash"]
