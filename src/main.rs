@@ -2,7 +2,10 @@ extern crate clap;
 extern crate num_cpus;
 
 use clap::{Arg, App};
-use std::net::{SocketAddr, TcpStream};
+use std::mem::swap;
+use std::net::SocketAddr; 
+use std::net::TcpStream;
+use std::process::exit;
 use std::time::Duration;
 
 fn main() {
@@ -25,8 +28,23 @@ fn main() {
                           .get_matches();
 
     let ip = matches.value_of("ip").unwrap();
-    let port_min = matches.value_of("port_min").unwrap();
-    let port_max = matches.value_of("port_max").unwrap();
+    let mut port_min: i32 = matches.value_of("port_min").unwrap().parse().unwrap();
+    let mut port_max: i32 = matches.value_of("port_max").unwrap().parse().unwrap();
+
+    if port_min > port_max {
+        swap(&mut port_min, &mut port_max);
+    }
+
+    if port_min < 0 || port_max < 0 {
+        eprintln!("Port min and max must be non-negative");
+        exit(1);
+    }
+
+    let max_port_value = 655_5;
+    if port_min > max_port_value || port_max > max_port_value {
+        eprintln!("Port min and max must be less than or equal to {}", max_port_value);
+        exit(1);
+    }
 
     println!("IP: {} Ports: {} - {}", ip, port_min, port_max);
 
