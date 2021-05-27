@@ -28,20 +28,16 @@ fn main() {
 
     let ip = matches.value_of("ip").expect("Unable to gather ip")
                     .parse::<IpAddr>().expect("Unable to convert to IP address");
-    let mut port_min: i32 = matches.value_of("port_min").expect("Unable to gather minimum port")
+    let mut port_min: u16 = matches.value_of("port_min").expect("Unable to gather minimum port")
                     .parse().expect("Unable to interpret minimum port");
-    let mut port_max: i32 = matches.value_of("port_max").expect("Unable to gather maximum port")
+    let mut port_max: u16 = matches.value_of("port_max").expect("Unable to gather maximum port")
                     .parse().expect("Unable to interpert maximum port");
 
     // Verify min and max in appropriate order for range
     if port_min > port_max {
         swap(&mut port_min, &mut port_max);
     }
-    // Verify min and max non-negative 
-    if port_min < 0 || port_max < 0 {
-        eprintln!("Port min and max must be non-negative");
-        exit(1);
-    }
+    
     // Verify port values not too high
     let max_port_value = 65535;
     if port_min > max_port_value || port_max > max_port_value {
@@ -57,10 +53,9 @@ fn main() {
 
     // Set port check timeout
     let timeout = Duration::from_secs(1);
-    // Set ip to localhost
-    let port_range = 45900..46000;
+
     // Check each port in range
-    for port in port_range {
+    for port in port_min..port_max {
         let addr = SocketAddr::from((ip, port));
         // Attempt connection...
         if TcpStream::connect_timeout(&addr, timeout).is_ok() {
