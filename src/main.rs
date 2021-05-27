@@ -1,11 +1,9 @@
 extern crate clap;
 extern crate num_cpus;
 
-use clap::{Arg, App};
+use clap::{App, Arg};
 use std::mem::swap;
-use std::net::IpAddr;
-use std::net::SocketAddr; 
-use std::net::TcpStream;
+use std::net::{IpAddr, SocketAddr, TcpStream};
 use std::process::exit;
 use std::time::Duration;
 
@@ -45,7 +43,7 @@ fn main() {
         exit(1);
     }
     // Verify port values not too high
-    let max_port_value = 655_5;
+    let max_port_value = 65535;
     if port_min > max_port_value || port_max > max_port_value {
         eprintln!("Port min and max must be less than or equal to {}", max_port_value);
         exit(1);
